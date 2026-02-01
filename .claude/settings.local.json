@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      "WebSearch",
+      "Bash(npx create-next-app:*)",
+      "Bash(npx shadcn@latest init:*)",
+      "Bash(npx shadcn:*)",
+      "Bash(npx shadcn@latest add:*)",
+      "Bash(npm install:*)",
+      "Bash(source venv/bin/activate)",
+      "Bash(python -c:*)",
+      "Bash(pip install:*)",
+      "Bash(npm run build:*)"
+    ]
+  }
+}
