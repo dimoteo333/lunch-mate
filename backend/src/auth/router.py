@@ -9,6 +9,11 @@ from src.core.security import (
     generate_otp,
     get_current_user,
 )
+from src.core.email_validation import (
+    is_personal_email,
+    is_whitelisted_domain,
+    get_company_info,
+)
 from src.config import settings
 from src.models.user import User, CompanyDomain
 from src.schemas.auth import (
@@ -36,21 +41,55 @@ async def send_verification_email(
     email = request.email.lower()
     domain = email.split("@")[1]
 
-    # Check if domain exists, create if not
+    # 1. 개인 이메일 차단
+    if is_personal_email(email):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="개인 이메일(gmail, naver 등)은 사용할 수 없습니다. 회사 이메일을 사용해주세요.",
+        )
+
+    # 2. 기존 도메인 확인
     result = await db.execute(
         select(CompanyDomain).where(CompanyDomain.domain == domain)
     )
     company = result.scalar_one_or_none()
 
     if not company:
-        # Auto-create company domain
-        company = CompanyDomain(
-            domain=domain,
-            company_name=domain.split(".")[0].title(),
-            whitelisted=True,
+        # 3. 화이트리스트 확인
+        company_info = get_company_info(domain)
+        
+        if company_info:
+            # 화이트리스트에 있음 -> 자동 승인
+            company_name, industry = company_info
+            company = CompanyDomain(
+                domain=domain,
+                company_name=company_name,
+                industry=industry,
+                whitelisted=True,
+            )
+            db.add(company)
+            await db.flush()
+        else:
+            # 화이트리스트에 없음 -> 승인 대기 상태로 생성
+            company = CompanyDomain(
+                domain=domain,
+                company_name=domain.split(".")[0].title(),
+                whitelisted=False,  # 관리자 승인 필요
+            )
+            db.add(company)
+            await db.flush()
+            
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail=f"'{domain}' 도메인은 아직 등록되지 않은 기업입니다. 관리자 승인 후 사용 가능합니다.",
+            )
+
+    # 4. 화이트리스트 여부 확인
+    if not company.whitelisted:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail=f"'{domain}' 도메인은 현재 승인 대기 중입니다. 관리자 승인 후 사용 가능합니다.",
         )
-        db.add(company)
-        await db.flush()
 
     # Generate OTP
     otp = generate_otp(settings.OTP_LENGTH)
@@ -60,11 +99,15 @@ async def send_verification_email(
     if settings.DEBUG:
         return {
             "message": "인증 코드가 발송되었습니다",
+            "company_name": company.company_name,
             "debug_code": otp,  # Remove in production
         }
 
     # TODO: Send actual email
-    return {"message": "인증 코드가 발송되었습니다"}
+    return {
+        "message": "인증 코드가 발송되었습니다",
+        "company_name": company.company_name,
+    }
 
 
 @router.post("/email-verification/verify", response_model=TokenResponse)
