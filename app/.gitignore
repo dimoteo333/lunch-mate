@@ -43,3 +43,17 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# Flutter/Dart 추가 항목
+.metadata
+.packages
+.flutter-plugins
+.flutter-plugins-dependencies
+app.iml
+
+# Android/iOS 빌드 및 보안
+**/android/**/generated/
+**/android/key.properties
+**/*.jks
+**/*.keystore
+**/*.log
