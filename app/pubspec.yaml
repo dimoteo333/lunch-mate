@@ -32,10 +32,7 @@ dependencies:
   flutter_svg: ^2.0.0
   cached_network_image: ^3.3.0
   shimmer: ^3.0.0
-  
-  # Forms
-  flutter_form_builder: any
-  form_builder_validators: any
+  shadcn_ui: ^0.45.2
   
   # Utils
   intl: any

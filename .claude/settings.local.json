@@ -14,7 +14,17 @@
       "Bash(lsof:*)",
       "Bash(alembic current:*)",
       "Bash(alembic revision:*)",
-      "Bash(alembic upgrade:*)"
+      "Bash(alembic upgrade:*)",
+      "Bash(xargs:*)",
+      "Bash(wc:*)",
+      "Bash(flutter analyze:*)",
+      "Bash(flutter test:*)",
+      "mcp__plugin_context7_context7__resolve-library-id",
+      "mcp__plugin_context7_context7__query-docs",
+      "mcp__sequential-thinking__sequentialthinking",
+      "Bash(flutter pub get:*)",
+      "Bash(flutter build:*)",
+      "Bash(xcrun simctl spawn booted log stream:*)"
     ]
   }
 }

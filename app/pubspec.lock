@@ -41,6 +41,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.2"
+  boxy:
+    dependency: transitive
+    description:
+      name: boxy
+      sha256: "569373f23560f5a5dbe53c08a7463a698635e7ac72ba355ff4fa52516c0d2e32"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.2.2"
   build:
     dependency: transitive
     description:
@@ -225,6 +233,22 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.1"
+  extended_image:
+    dependency: transitive
+    description:
+      name: extended_image
+      sha256: f6cbb1d798f51262ed1a3d93b4f1f2aa0d76128df39af18ecb77fa740f88b2e0
+      url: "https://pub.dev"
+    source: hosted
+    version: "10.0.1"
+  extended_image_library:
+    dependency: transitive
+    description:
+      name: extended_image_library
+      sha256: "1f9a24d3a00c2633891c6a7b5cab2807999eb2d5b597e5133b63f49d113811fe"
+      url: "https://pub.dev"
+    source: hosted
+    version: "5.0.1"
   fake_async:
     dependency: transitive
     description:
@@ -262,6 +286,14 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  flutter_animate:
+    dependency: transitive
+    description:
+      name: flutter_animate
+      sha256: "7befe2d3252728afb77aecaaea1dec88a89d35b9b1d2eea6d04479e8af9117b5"
+      url: "https://pub.dev"
+    source: hosted
+    version: "4.5.2"
   flutter_cache_manager:
     dependency: transitive
     description:
@@ -270,14 +302,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.4.1"
-  flutter_form_builder:
-    dependency: "direct main"
-    description:
-      name: flutter_form_builder
-      sha256: "5a0aaed73604686929f176b6b373899c4ab0fad461a971c6a66bfd9f6ad8dbce"
-      url: "https://pub.dev"
-    source: hosted
-    version: "10.3.0+1"
   flutter_lints:
     dependency: "direct dev"
     description:
@@ -347,6 +371,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.1.2"
+  flutter_shaders:
+    dependency: transitive
+    description:
+      name: flutter_shaders
+      sha256: "34794acadd8275d971e02df03afee3dee0f98dbfb8c4837082ad0034f612a3e2"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.1.3"
   flutter_svg:
     dependency: "direct main"
     description:
@@ -365,14 +397,6 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
-  form_builder_validators:
-    dependency: "direct main"
-    description:
-      name: form_builder_validators
-      sha256: cd9a06b35abaed8bf050467c1239e3ee1c8795f42d4cb6568c08dbb8a4d6bd36
-      url: "https://pub.dev"
-    source: hosted
-    version: "11.3.0"
   freezed:
     dependency: "direct dev"
     description:
@@ -493,6 +517,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.6.0"
+  http_client_helper:
+    dependency: transitive
+    description:
+      name: http_client_helper
+      sha256: "8a9127650734da86b5c73760de2b404494c968a3fd55602045ffec789dac3cb1"
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.0.0"
   http_multi_server:
     dependency: transitive
     description:
@@ -589,6 +621,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.3.0"
+  lucide_icons_flutter:
+    dependency: transitive
+    description:
+      name: lucide_icons_flutter
+      sha256: "67bc7cc05c3c03eee3405f88a0ca127efca03561db00e2e93cc0a46019c19a7b"
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.1.9"
   matcher:
     dependency: transitive
     description:
@@ -781,6 +821,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.28.0"
+  shadcn_ui:
+    dependency: "direct main"
+    description:
+      name: shadcn_ui
+      sha256: "58bcbeb35c5d381c0929c8923bedd8f444a1247ae08efbe1b767817d4f153ffb"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.45.2"
   shared_preferences:
     dependency: "direct main"
     description:
@@ -994,6 +1042,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.7.7"
+  theme_extensions_builder_annotation:
+    dependency: transitive
+    description:
+      name: theme_extensions_builder_annotation
+      sha256: e14648a3318842992f14b207cb811df48a1d6f0bd742b77bcbf1b74557493c00
+      url: "https://pub.dev"
+    source: hosted
+    version: "7.1.0"
   timing:
     dependency: transitive
     description:
@@ -1002,6 +1058,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.2"
+  two_dimensional_scrollables:
+    dependency: transitive
+    description:
+      name: two_dimensional_scrollables
+      sha256: e9397ae372839aecb3135d246bff5cce5e738604c9afd03d65d06c7a246ae958
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.3.8"
   typed_data:
     dependency: transitive
     description:
@@ -1010,6 +1074,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.4.0"
+  universal_image:
+    dependency: transitive
+    description:
+      name: universal_image
+      sha256: ef47a4a002158cf0b36ed3b7605af132d2476cc42703e41b8067d3603705c40d
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.11"
   uuid:
     dependency: transitive
     description:

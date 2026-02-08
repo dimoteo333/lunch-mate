@@ -8,6 +8,6 @@ void main() {
     await tester.pumpWidget(const ProviderScope(child: LunchMateApp()));
 
     // Verify that Login Screen is shown.
-    expect(find.text('Login Screen'), findsOneWidget);
+    expect(find.text('시작하기'), findsOneWidget);
   });
 }

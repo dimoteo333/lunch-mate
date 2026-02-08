@@ -45,7 +45,7 @@ async def send_verification_email(
     if is_personal_email(email):
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="개인 이메일(gmail, naver 등)은 사용할 수 없습니다. 회사 이메일을 사용해주세요.",
+            detail="올바른 회사 이메일 도메인이 아닙니다.",
         )
 
     # 2. 기존 도메인 확인
@@ -118,13 +118,17 @@ async def verify_email(
     """이메일 인증 코드 확인"""
     email = request.email.lower()
 
-    # Verify OTP
-    stored_otp = otp_storage.get(email)
-    if not stored_otp or stored_otp != request.code:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="잘못된 인증 코드입니다",
-        )
+    # 개발용 코드 (DEBUG 모드일 때만 허용)
+    if settings.DEBUG and request.code == "111111":
+        stored_otp = otp_storage.get(email)
+    else:
+        # Verify OTP
+        stored_otp = otp_storage.get(email)
+        if not stored_otp or stored_otp != request.code:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="잘못된 인증 코드입니다",
+            )
 
     # Clear OTP
     del otp_storage[email]

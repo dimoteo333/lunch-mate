@@ -127,3 +127,6 @@ logs/
 
 # Alembic
 backend/alembic/versions/*.pyc
+
+# Claude
+.claude/
