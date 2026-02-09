@@ -1,7 +1,9 @@
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
+import '../../../core/theme/app_theme.dart';
 import '../../../providers/auth_provider.dart';
 import '../../widgets/liquid_glass.dart';
 
@@ -33,37 +35,33 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
     final theme = ShadTheme.of(context);
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text('프로필 설정 (${_currentIndex + 1}/4)'),
-        leading: _currentIndex > 0
-            ? IconButton(
-                icon: const Icon(Icons.arrow_back),
-                onPressed: () {
-                  _pageController.previousPage(
-                    duration: const Duration(milliseconds: 300),
-                    curve: Curves.easeInOut,
-                  );
-                },
-              )
-            : null,
-      ),
       body: LiquidBackground(
         child: ShadForm(
           key: _formKey,
-          child: PageView(
-            controller: _pageController,
-            physics: const NeverScrollableScrollPhysics(),
-            onPageChanged: (index) {
-              setState(() {
-                _currentIndex = index;
-              });
-            },
-            children: [
-              _buildStep1(theme),
-              _buildStep2(theme),
-              _buildStep3(theme),
-              _buildStep4(authState.isLoading, theme),
-            ],
+          child: SafeArea(
+            bottom: false,
+            child: Column(
+              children: [
+                _buildGlassAppBar(theme),
+                Expanded(
+                  child: PageView(
+                    controller: _pageController,
+                    physics: const NeverScrollableScrollPhysics(),
+                    onPageChanged: (index) {
+                      setState(() {
+                        _currentIndex = index;
+                      });
+                    },
+                    children: [
+                      _buildStep1(theme),
+                      _buildStep2(theme),
+                      _buildStep3(theme),
+                      _buildStep4(authState.isLoading, theme),
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -308,7 +306,70 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
     );
   }
 
+  Widget _buildGlassAppBar(ShadThemeData theme) {
+    final isDark = theme.brightness == Brightness.dark;
+    final barBgColor = isDark
+        ? const Color(0x66000000)
+        : const Color(0x66FFFFFF);
+
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(100),
+        child: BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 24, sigmaY: 24),
+          child: Container(
+            height: 56,
+            padding: const EdgeInsets.symmetric(horizontal: 8),
+            decoration: AppTheme.glassDecoration(
+              borderRadius: 100,
+              backgroundColor: barBgColor,
+              brightness: theme.brightness,
+            ),
+            child: Row(
+              children: [
+                if (_currentIndex > 0)
+                  IconButton(
+                    icon: Icon(
+                      Icons.arrow_back,
+                      color: theme.colorScheme.foreground,
+                      size: 20,
+                    ),
+                    onPressed: () {
+                      _pageController.previousPage(
+                        duration: const Duration(milliseconds: 300),
+                        curve: Curves.easeInOut,
+                      );
+                    },
+                  )
+                else
+                  const SizedBox(width: 48),
+                Expanded(
+                  child: Text(
+                    '프로필 설정 (${_currentIndex + 1}/4)',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w600,
+                      color: theme.colorScheme.foreground,
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 48),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
   void _nextPage() {
+    if (_currentIndex == 0) {
+      if (!(_formKey.currentState?.validate() ?? false)) {
+        return;
+      }
+    }
     _pageController.nextPage(
       duration: const Duration(milliseconds: 300),
       curve: Curves.easeInOut,

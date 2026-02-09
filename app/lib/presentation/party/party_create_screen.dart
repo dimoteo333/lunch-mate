@@ -4,7 +4,9 @@ import 'package:go_router/go_router.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 import 'package:intl/intl.dart';
 import 'package:app/providers/party_provider.dart';
+import 'package:app/data/repositories/kakao_repository.dart';
 import '../widgets/liquid_glass.dart';
+import '../widgets/kakao_map_widget.dart';
 
 class PartyCreateScreen extends ConsumerStatefulWidget {
   const PartyCreateScreen({super.key});
@@ -18,6 +20,11 @@ class _PartyCreateScreenState extends ConsumerState<PartyCreateScreen> {
 
   // Date/time state managed separately (no ShadDatePicker form field)
   DateTime _startTime = DateTime.now().add(const Duration(minutes: 30));
+
+  // Selected restaurant location
+  double? _selectedLat;
+  double? _selectedLon;
+  String? _selectedLocationName;
 
   @override
   Widget build(BuildContext context) {
@@ -112,11 +119,96 @@ class _PartyCreateScreenState extends ConsumerState<PartyCreateScreen> {
                   ),
                   const SizedBox(height: 16),
 
-                  ShadInputFormField(
-                    id: 'location_name',
-                    label: const Text('장소명 (선택)'),
-                    placeholder: const Text('장소명을 입력하세요'),
+                  // 장소 검색 필드
+                  Text(
+                    '장소명',
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500,
+                      color: theme.colorScheme.foreground,
+                    ),
                   ),
+                  const SizedBox(height: 8),
+                  GestureDetector(
+                    onTap: () async {
+                      final result = await context.push<KakaoPlace>(
+                        '/party/create/search-restaurant',
+                      );
+                      if (result != null) {
+                        setState(() {
+                          _selectedLat = result.lat;
+                          _selectedLon = result.lon;
+                          _selectedLocationName = result.placeName;
+                        });
+                      }
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 14,
+                      ),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(
+                          color: theme.colorScheme.border,
+                        ),
+                      ),
+                      child: Row(
+                        children: [
+                          Icon(
+                            Icons.search_rounded,
+                            size: 18,
+                            color: theme.colorScheme.mutedForeground,
+                          ),
+                          const SizedBox(width: 8),
+                          Expanded(
+                            child: Text(
+                              _selectedLocationName ?? '장소를 검색하세요',
+                              style: TextStyle(
+                                color: _selectedLocationName != null
+                                    ? theme.colorScheme.foreground
+                                    : theme.colorScheme.mutedForeground,
+                              ),
+                            ),
+                          ),
+                          if (_selectedLocationName != null)
+                            GestureDetector(
+                              onTap: () {
+                                setState(() {
+                                  _selectedLat = null;
+                                  _selectedLon = null;
+                                  _selectedLocationName = null;
+                                });
+                              },
+                              child: Icon(
+                                Icons.close_rounded,
+                                size: 18,
+                                color: theme.colorScheme.mutedForeground,
+                              ),
+                            ),
+                        ],
+                      ),
+                    ),
+                  ),
+
+                  // 지도 미리보기
+                  if (_selectedLat != null && _selectedLon != null) ...[
+                    const SizedBox(height: 12),
+                    KakaoMapWidget(
+                      latitude: _selectedLat!,
+                      longitude: _selectedLon!,
+                      height: 160,
+                      zoomLevel: 3,
+                      interactive: false,
+                      markers: [
+                        MapMarkerData(
+                          lat: _selectedLat!,
+                          lon: _selectedLon!,
+                          label: _selectedLocationName ?? '',
+                        ),
+                      ],
+                    ),
+                  ],
                   const SizedBox(height: 16),
 
                   // Max participants select (replacing slider)
@@ -182,6 +274,13 @@ class _PartyCreateScreenState extends ConsumerState<PartyCreateScreen> {
 
       // Add manually managed date/time
       formData['start_time'] = _startTime.toIso8601String();
+
+      // Add selected location coordinates
+      if (_selectedLat != null) formData['location_lat'] = _selectedLat;
+      if (_selectedLon != null) formData['location_lon'] = _selectedLon;
+      if (_selectedLocationName != null) {
+        formData['location_name'] = _selectedLocationName;
+      }
 
       try {
         await ref.read(partyControllerProvider.notifier).createParty(formData);

@@ -54,6 +54,7 @@ class PartyResponse(BaseModel):
     status: str
     participants: list[ParticipantResponse]
     created_at: datetime
+    distance_km: float | None = None
 
     class Config:
         from_attributes = True

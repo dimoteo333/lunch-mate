@@ -57,3 +57,7 @@ app.iml
 **/*.jks
 **/*.keystore
 **/*.log
+
+# Environment variables
+.env
+

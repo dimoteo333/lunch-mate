@@ -7,6 +7,7 @@ import '../../presentation/home/home_screen.dart';
 import '../../presentation/profile/profile_screen.dart';
 import '../../presentation/party/party_create_screen.dart';
 import '../../presentation/party/party_detail_screen.dart';
+import '../../presentation/party/restaurant_search_screen.dart';
 import '../../presentation/chat/chat_screen.dart';
 
 final GlobalKey<NavigatorState> _rootNavigatorKey = GlobalKey<NavigatorState>();
@@ -42,6 +43,10 @@ final appRouter = GoRouter(
     GoRoute(
       path: '/party/create',
       builder: (context, state) => const PartyCreateScreen(),
+    ),
+    GoRoute(
+      path: '/party/create/search-restaurant',
+      builder: (context, state) => const RestaurantSearchScreen(),
     ),
     GoRoute(
       path: '/party/:id',

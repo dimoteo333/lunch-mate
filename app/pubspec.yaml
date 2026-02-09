@@ -38,9 +38,13 @@ dependencies:
   intl: any
   freezed_annotation: ^2.4.0
   json_annotation: ^4.8.0
+  flutter_dotenv: ^5.1.0
   
   # Location
   geolocator: ^11.0.0
+
+  # Kakao Map
+  kakao_map_plugin: ^0.4.0
   
   # Realtime
   web_socket_channel: ^2.4.0

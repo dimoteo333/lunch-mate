@@ -33,7 +33,7 @@ class PartyRepository {
       queryParameters: queryParams,
     );
     
-    final List items = response.data['parties']; // 백엔드 응답 구조: { "parties": [...], "total": ... }
+    final List items = response.data['items'] ?? [];
     return items.map((json) => PartyModel.fromJson(json)).toList();
   }
 

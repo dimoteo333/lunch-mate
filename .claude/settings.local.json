@@ -24,7 +24,9 @@
       "mcp__sequential-thinking__sequentialthinking",
       "Bash(flutter pub get:*)",
       "Bash(flutter build:*)",
-      "Bash(xcrun simctl spawn booted log stream:*)"
+      "Bash(xcrun simctl spawn booted log stream:*)",
+      "Bash(flutter pub add:*)",
+      "Bash(chmod:*)"
     ]
   }
 }

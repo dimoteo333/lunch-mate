@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException, status, Query
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, func
 from sqlalchemy.orm import selectinload
-from math import ceil
+from math import ceil, radians, sin, cos, sqrt, atan2
 
 from src.core.database import get_db
 from src.core.security import get_current_active_user
@@ -20,7 +20,16 @@ from src.schemas.user import UserBriefResponse
 router = APIRouter(prefix="/parties", tags=["파티"])
 
 
-def party_to_response(party: Party) -> PartyResponse:
+def _haversine_km(lat1: float, lon1: float, lat2: float, lon2: float) -> float:
+    """두 좌표 간 거리(km)를 Haversine 공식으로 계산"""
+    R = 6371.0
+    dlat = radians(lat2 - lat1)
+    dlon = radians(lon2 - lon1)
+    a = sin(dlat / 2) ** 2 + cos(radians(lat1)) * cos(radians(lat2)) * sin(dlon / 2) ** 2
+    return R * 2 * atan2(sqrt(a), sqrt(1 - a))
+
+
+def party_to_response(party: Party, distance_km: float | None = None) -> PartyResponse:
     return PartyResponse(
         party_id=party.party_id,
         creator_id=party.creator_id,
@@ -57,6 +66,7 @@ def party_to_response(party: Party) -> PartyResponse:
             if p.status == "joined"
         ],
         created_at=party.created_at,
+        distance_km=round(distance_km, 2) if distance_km is not None else None,
     )
 
 
@@ -65,10 +75,13 @@ async def list_parties(
     page: int = Query(1, ge=1),
     size: int = Query(20, ge=1, le=100),
     status_filter: str | None = Query(None, alias="status"),
+    latitude: float | None = Query(None),
+    longitude: float | None = Query(None),
+    radius_km: float = Query(3.0, ge=0.1, le=50.0),
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(get_current_active_user),
 ):
-    """파티 목록 조회"""
+    """파티 목록 조회 (위치 기반 필터링 지원)"""
     query = (
         select(Party)
         .options(
@@ -83,23 +96,35 @@ async def list_parties(
     else:
         query = query.where(Party.status == PartyStatus.RECRUITING)
 
-    # Count total
-    count_query = select(func.count(Party.party_id))
-    if status_filter:
-        count_query = count_query.where(Party.status == PartyStatus(status_filter))
-    else:
-        count_query = count_query.where(Party.status == PartyStatus.RECRUITING)
+    result = await db.execute(query)
+    parties = list(result.scalars().all())
 
-    total_result = await db.execute(count_query)
-    total = total_result.scalar() or 0
+    # 위치 기반 거리 계산 및 필터링
+    has_location = latitude is not None and longitude is not None
+    party_distances: list[tuple[Party, float | None]] = []
+
+    for p in parties:
+        if has_location and p.location_lat is not None and p.location_lon is not None:
+            dist = _haversine_km(latitude, longitude, p.location_lat, p.location_lon)
+            if dist <= radius_km:
+                party_distances.append((p, dist))
+        else:
+            # 위치 정보 없는 파티도 포함 (거리 None)
+            party_distances.append((p, None))
+
+    # 거리순 정렬 (거리 없는 파티는 뒤로)
+    if has_location:
+        party_distances.sort(key=lambda x: x[1] if x[1] is not None else float('inf'))
+
+    total = len(party_distances)
 
     # Paginate
-    query = query.offset((page - 1) * size).limit(size)
-    result = await db.execute(query)
-    parties = result.scalars().all()
+    start = (page - 1) * size
+    end = start + size
+    page_items = party_distances[start:end]
 
     return PartyListResponse(
-        items=[party_to_response(p) for p in parties],
+        items=[party_to_response(p, dist) for p, dist in page_items],
         total=total,
         page=page,
         size=size,

@@ -7,6 +7,7 @@ import 'package:app/data/models/party_model.dart';
 import 'package:app/providers/party_provider.dart';
 import 'package:app/providers/auth_provider.dart';
 import '../widgets/liquid_glass.dart';
+import '../widgets/kakao_map_widget.dart';
 
 class PartyDetailScreen extends ConsumerWidget {
   final String partyId;
@@ -80,6 +81,34 @@ class PartyDetailScreen extends ConsumerWidget {
                           ),
                         ),
                         const SizedBox(height: 24),
+
+                        // 지도
+                        if (party.locationLat != null &&
+                            party.locationLon != null) ...[
+                          Text(
+                            '위치',
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: theme.colorScheme.foreground,
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          KakaoMapWidget(
+                            latitude: party.locationLat!,
+                            longitude: party.locationLon!,
+                            height: 180,
+                            zoomLevel: 3,
+                            interactive: false,
+                            markers: [
+                              MapMarkerData(
+                                lat: party.locationLat!,
+                                lon: party.locationLon!,
+                                label: party.locationName ?? party.title,
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 24),
+                        ],
 
                         // 설명
                         if (party.description != null) ...[
