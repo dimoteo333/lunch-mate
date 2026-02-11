@@ -1,10 +1,12 @@
 import 'dart:async';
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 import 'package:app/data/repositories/kakao_repository.dart';
 import 'package:app/providers/location_provider.dart';
+import 'package:app/core/theme/app_theme.dart';
 import '../widgets/liquid_glass.dart';
 import '../widgets/kakao_map_widget.dart';
 
@@ -111,124 +113,201 @@ class _RestaurantSearchScreenState
     final location = ref.watch(locationProvider);
     final mapLat = _selectedPlace?.lat ?? location.lat ?? 37.5665;
     final mapLon = _selectedPlace?.lon ?? location.lon ?? 126.9780;
+    final topPadding = MediaQuery.of(context).padding.top;
 
     return Scaffold(
-      appBar: AppBar(title: const Text('식당 검색')),
+      extendBody: true,
+      extendBodyBehindAppBar: true,
       body: LiquidBackground(
-        child: Column(
+        child: Stack(
           children: [
-            // ── Search bar ──
-            Padding(
-              padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
-              child: ShadInput(
-                controller: _searchController,
-                placeholder: const Text('식당이나 카페를 검색하세요'),
-                leading: const Icon(Icons.search_rounded, size: 18),
-                onChanged: _onSearchChanged,
-              ),
-            ),
+            // ── Main content ──
+            Column(
+              children: [
+                SizedBox(height: topPadding + 56 + 16),
 
-            // ── Category quick filters ──
-            Padding(
-              padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
-              child: Row(
-                children: [
-                  _CategoryChip(
-                    label: '음식점',
-                    icon: Icons.restaurant_rounded,
-                    isActive: _activeCategory == 'FD6',
-                    onTap: () => _searchCategory('FD6', '음식점'),
+                // ── Search bar ──
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
+                  child: ShadInput(
+                    controller: _searchController,
+                    placeholder: const Text('식당이나 카페를 검색하세요'),
+                    leading: const Icon(Icons.search_rounded, size: 18),
+                    onChanged: _onSearchChanged,
                   ),
-                  const SizedBox(width: 8),
-                  _CategoryChip(
-                    label: '카페',
-                    icon: Icons.coffee_rounded,
-                    isActive: _activeCategory == 'CE7',
-                    onTap: () => _searchCategory('CE7', '카페'),
-                  ),
-                ],
-              ),
-            ),
+                ),
 
-            // ── Map ──
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: KakaoMapWidget(
-                latitude: mapLat,
-                longitude: mapLon,
-                height: 180,
-                zoomLevel: 4,
-                interactive: true,
-                markers: _results
-                    .map((p) => MapMarkerData(
-                          lat: p.lat,
-                          lon: p.lon,
-                          label: p.placeName,
-                        ))
-                    .toList(),
-              ),
-            ),
-            const SizedBox(height: 8),
-
-            // ── Results list ──
-            Expanded(
-              child: _isSearching
-                  ? Center(
-                      child: CircularProgressIndicator(
-                        color: theme.colorScheme.primary,
+                // ── Category quick filters ──
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
+                  child: Row(
+                    children: [
+                      _CategoryChip(
+                        label: '음식점',
+                        icon: Icons.restaurant_rounded,
+                        isActive: _activeCategory == 'FD6',
+                        onTap: () => _searchCategory('FD6', '음식점'),
                       ),
-                    )
-                  : _results.isEmpty
+                      const SizedBox(width: 8),
+                      _CategoryChip(
+                        label: '카페',
+                        icon: Icons.coffee_rounded,
+                        isActive: _activeCategory == 'CE7',
+                        onTap: () => _searchCategory('CE7', '카페'),
+                      ),
+                    ],
+                  ),
+                ),
+
+                // ── Map ──
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: KakaoMapWidget(
+                    latitude: mapLat,
+                    longitude: mapLon,
+                    height: 180,
+                    zoomLevel: 4,
+                    interactive: true,
+                    markers: _results
+                        .map((p) => MapMarkerData(
+                              lat: p.lat,
+                              lon: p.lon,
+                              label: p.placeName,
+                            ))
+                        .toList(),
+                  ),
+                ),
+                const SizedBox(height: 8),
+
+                // ── Results list ──
+                Expanded(
+                  child: _isSearching
                       ? Center(
-                          child: Text(
-                            '검색어를 입력하거나 카테고리를 선택하세요',
-                            style: TextStyle(
-                              color: theme.colorScheme.mutedForeground,
-                            ),
+                          child: CircularProgressIndicator(
+                            color: theme.colorScheme.primary,
                           ),
                         )
-                      : ListView.builder(
-                          padding: const EdgeInsets.fromLTRB(16, 0, 16, 100),
-                          itemCount: _results.length,
-                          itemBuilder: (context, index) {
-                            final place = _results[index];
-                            final isSelected =
-                                _selectedPlace?.placeName == place.placeName &&
-                                    _selectedPlace?.lat == place.lat;
-                            return _PlaceCard(
-                              place: place,
-                              isSelected: isSelected,
-                              onTap: () {
-                                setState(() => _selectedPlace = place);
+                      : _results.isEmpty
+                          ? Center(
+                              child: Text(
+                                '검색어를 입력하거나 카테고리를 선택하세요',
+                                style: TextStyle(
+                                  color: theme.colorScheme.mutedForeground,
+                                ),
+                              ),
+                            )
+                          : ListView.builder(
+                              padding: const EdgeInsets.fromLTRB(16, 0, 16, 100),
+                              itemCount: _results.length,
+                              itemBuilder: (context, index) {
+                                final place = _results[index];
+                                final isSelected =
+                                    _selectedPlace?.placeName == place.placeName &&
+                                        _selectedPlace?.lat == place.lat;
+                                return _PlaceCard(
+                                  place: place,
+                                  isSelected: isSelected,
+                                  onTap: () {
+                                    setState(() => _selectedPlace = place);
+                                  },
+                                );
                               },
-                            );
-                          },
-                        ),
-            ),
+                            ),
+                ),
 
-            // ── Confirm button ──
-            if (_selectedPlace != null)
-              Padding(
-                padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-                child: SafeArea(
-                  child: SizedBox(
-                    width: double.infinity,
-                    child: ShadButton(
-                      onPressed: () {
-                        context.pop(_selectedPlace);
-                      },
-                      leading: const Icon(Icons.check_rounded, size: 18),
-                      child: Text(
-                        '${_selectedPlace!.placeName} 선택',
-                        overflow: TextOverflow.ellipsis,
+                // ── Confirm button ──
+                if (_selectedPlace != null)
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+                    child: SafeArea(
+                      child: SizedBox(
+                        width: double.infinity,
+                        child: ShadButton(
+                          onPressed: () {
+                            context.pop(_selectedPlace);
+                          },
+                          leading: const Icon(Icons.check_rounded, size: 18),
+                          child: Text(
+                            '${_selectedPlace!.placeName} 선택',
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
                       ),
                     ),
                   ),
-                ),
-              ),
+              ],
+            ),
+
+            // ── Glass AppBar ──
+            Positioned(
+              top: 0,
+              left: 0,
+              right: 0,
+              child: _GlassAppBar(topPadding: topPadding),
+            ),
           ],
         ),
       ),
+    );
+  }
+}
+
+class _GlassAppBar extends StatelessWidget {
+  final double topPadding;
+
+  const _GlassAppBar({required this.topPadding});
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = ShadTheme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+    final barBgColor =
+        isDark ? const Color(0x66000000) : const Color(0x66FFFFFF);
+
+    return Column(
+      children: [
+        SizedBox(height: topPadding),
+        Padding(
+          padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(100),
+            child: BackdropFilter(
+              filter: ImageFilter.blur(sigmaX: 24, sigmaY: 24),
+              child: Container(
+                height: 56,
+                padding: const EdgeInsets.symmetric(horizontal: 8),
+                decoration: AppTheme.glassDecoration(
+                  borderRadius: 100,
+                  backgroundColor: barBgColor,
+                  brightness: theme.brightness,
+                ),
+                child: Row(
+                  children: [
+                    ShadButton.ghost(
+                      size: ShadButtonSize.sm,
+                      onPressed: () => Navigator.of(context).pop(),
+                      child: Icon(
+                        Icons.arrow_back_ios_new,
+                        size: 18,
+                        color: theme.colorScheme.foreground,
+                      ),
+                    ),
+                    const SizedBox(width: 4),
+                    Text(
+                      '식당 검색',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                        color: theme.colorScheme.foreground,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

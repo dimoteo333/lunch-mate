@@ -9,7 +9,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   // Load .env file
-  await dotenv.load(fileName: 'app/.env');
+  await dotenv.load(fileName: '.env');
 
   AuthRepository.initialize(appKey: ApiConstants.kakaoJsApiKey);
   runApp(const ProviderScope(child: LunchMateApp()));
