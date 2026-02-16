@@ -122,3 +122,8 @@ backend/alembic/versions/*.pyc
 
 # Claude
 .claude/
+
+# context-trio
+AGENTS.md
+CLAUDE.md
+docs/

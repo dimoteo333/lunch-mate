@@ -90,7 +90,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
               label: const Text('닉네임'),
               placeholder: const Text('닉네임을 입력하세요'),
               validator: (value) {
-                if (value == null || value.isEmpty) {
+                if (value.isEmpty) {
                   return '닉네임을 입력해주세요';
                 }
                 return null;

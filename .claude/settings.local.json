@@ -26,7 +26,8 @@
       "Bash(flutter build:*)",
       "Bash(xcrun simctl spawn booted log stream:*)",
       "Bash(flutter pub add:*)",
-      "Bash(chmod:*)"
+      "Bash(chmod:*)",
+      "Bash(git add:*)"
     ]
   }
 }

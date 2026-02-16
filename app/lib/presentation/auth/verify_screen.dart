@@ -1,11 +1,10 @@
-import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
-import 'package:app/core/theme/app_theme.dart';
 import '../../../providers/auth_provider.dart';
 import '../widgets/liquid_glass.dart';
+import '../widgets/glass_app_bar.dart';
 
 class VerifyScreen extends ConsumerStatefulWidget {
   final String email;
@@ -66,7 +65,7 @@ class _VerifyScreenState extends ConsumerState<VerifyScreen> {
                               child: Icon(Icons.lock_outline, size: 16),
                             ),
                             validator: (value) {
-                              if (value == null || value.isEmpty) {
+                              if (value.isEmpty) {
                                 return '인증 코드를 입력해주세요';
                               }
                               if (value.length < 6) {
@@ -130,7 +129,7 @@ class _VerifyScreenState extends ConsumerState<VerifyScreen> {
               top: 0,
               left: 0,
               right: 0,
-              child: _GlassAppBar(topPadding: topPadding),
+              child: GlassAppBar(title: '이메일 인증', topPadding: topPadding),
             ),
           ],
         ),
@@ -139,62 +138,3 @@ class _VerifyScreenState extends ConsumerState<VerifyScreen> {
   }
 }
 
-class _GlassAppBar extends StatelessWidget {
-  final double topPadding;
-
-  const _GlassAppBar({required this.topPadding});
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = ShadTheme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
-    final barBgColor =
-        isDark ? const Color(0x66000000) : const Color(0x66FFFFFF);
-
-    return Column(
-      children: [
-        SizedBox(height: topPadding),
-        Padding(
-          padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(100),
-            child: BackdropFilter(
-              filter: ImageFilter.blur(sigmaX: 24, sigmaY: 24),
-              child: Container(
-                height: 56,
-                padding: const EdgeInsets.symmetric(horizontal: 8),
-                decoration: AppTheme.glassDecoration(
-                  borderRadius: 100,
-                  backgroundColor: barBgColor,
-                  brightness: theme.brightness,
-                ),
-                child: Row(
-                  children: [
-                    ShadButton.ghost(
-                      size: ShadButtonSize.sm,
-                      onPressed: () => Navigator.of(context).pop(),
-                      child: Icon(
-                        Icons.arrow_back_ios_new,
-                        size: 18,
-                        color: theme.colorScheme.foreground,
-                      ),
-                    ),
-                    const SizedBox(width: 4),
-                    Text(
-                      '이메일 인증',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
-                        color: theme.colorScheme.foreground,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-}

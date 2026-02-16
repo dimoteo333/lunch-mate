@@ -123,7 +123,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
                                   child: Icon(Icons.email_outlined, size: 16),
                                 ),
                                 validator: (value) {
-                                  if (value == null || value.isEmpty) {
+                                  if (value.isEmpty) {
                                     return '이메일을 입력해주세요';
                                   }
                                   if (!value.contains('@') ||
