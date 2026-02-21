@@ -50,5 +50,16 @@
 	<!-- Kakao Map SDK -->
 	<key>KAKAO_APP_KEY</key>
 	<string>YOUR_KAKAO_NATIVE_APP_KEY</string>
+	<key>KAKAO_NATIVE_APP_KEY</key>
+	<string>YOUR_KAKAO_NATIVE_APP_KEY</string>
+	<key>KAKAO_REST_API_KEY</key>
+	<string>YOUR_KAKAO_REST_API_KEY</string>
+
+	<!-- NSAppTransportSecurity (HTTP for development) -->
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<key>NSAllowsArbitraryLoads</key>
+		<true/>
+	</dict>
 </dict>
 </plist>

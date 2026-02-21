@@ -2,7 +2,8 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class ApiConstants {
   // Android Emulator: 10.0.2.2, iOS Simulator: 127.0.0.1
-  static const String baseUrl = 'http://127.0.0.1:8000/api/v1';
+  static const String baseUrl =
+      'https://sphinxlike-leandra-subproportionally.ngrok-free.dev/api/v1';
 
   static const String auth = '/auth';
   static const String users = '/users';

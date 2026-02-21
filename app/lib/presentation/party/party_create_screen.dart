@@ -5,7 +5,6 @@ import 'package:shadcn_ui/shadcn_ui.dart';
 import 'package:kakao_map_plugin/kakao_map_plugin.dart';
 import 'package:app/providers/party_provider.dart';
 import 'package:app/data/repositories/kakao_repository.dart';
-import 'package:app/core/theme/app_theme.dart';
 import '../widgets/liquid_glass.dart';
 import '../widgets/kakao_map_widget.dart';
 import '../widgets/glass_app_bar.dart';
