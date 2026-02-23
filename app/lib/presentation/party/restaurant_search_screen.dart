@@ -26,6 +26,56 @@ class _RestaurantSearchScreenState
   KakaoPlace? _selectedPlace;
   String? _activeCategory;
 
+  static const _cuisineCategories = [
+    ('한식', Icons.rice_bowl_rounded),
+    ('중식', Icons.ramen_dining_rounded),
+    ('일식', Icons.set_meal_rounded),
+    ('양식', Icons.dinner_dining_rounded),
+    ('분식', Icons.lunch_dining_rounded),
+    ('치킨', Icons.kebab_dining_rounded),
+    ('피자', Icons.local_pizza_rounded),
+    ('패스트푸드', Icons.fastfood_rounded),
+    ('카페', Icons.coffee_rounded),
+    ('뷔페', Icons.brunch_dining_rounded),
+    ('술집', Icons.sports_bar_rounded),
+  ];
+
+  Future<void> _searchCuisine(String cuisine) async {
+    final location = ref.read(locationProvider);
+    if (location.lat == null || location.lon == null) {
+      ShadSonner.of(context).show(
+        const ShadToast(title: Text('위치를 먼저 확인해주세요')),
+      );
+      return;
+    }
+
+    setState(() {
+      _isSearching = true;
+      _activeCategory = cuisine;
+      _searchController.clear();
+    });
+
+    try {
+      final kakao = ref.read(kakaoRepositoryProvider);
+      final results = await kakao.searchKeyword(
+        cuisine,
+        lat: location.lat,
+        lon: location.lon,
+        radius: 3000,
+      );
+      if (mounted) {
+        setState(() {
+          _results = results;
+          _isSearching = false;
+        });
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() => _isSearching = false);
+      }
+    }
+  }
+
   @override
   void dispose() {
     _searchController.dispose();
@@ -70,42 +120,6 @@ class _RestaurantSearchScreenState
     }
   }
 
-  Future<void> _searchCategory(String code, String label) async {
-    final location = ref.read(locationProvider);
-    if (location.lat == null || location.lon == null) {
-      ShadSonner.of(context).show(
-        const ShadToast(title: Text('위치를 먼저 확인해주세요')),
-      );
-      return;
-    }
-
-    setState(() {
-      _isSearching = true;
-      _activeCategory = code;
-      _searchController.clear();
-    });
-
-    try {
-      final kakao = ref.read(kakaoRepositoryProvider);
-      final results = await kakao.searchCategory(
-        code,
-        lat: location.lat!,
-        lon: location.lon!,
-        radius: 3000,
-      );
-      if (mounted) {
-        setState(() {
-          _results = results;
-          _isSearching = false;
-        });
-      }
-    } catch (e) {
-      if (mounted) {
-        setState(() => _isSearching = false);
-      }
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     final theme = ShadTheme.of(context);
@@ -130,31 +144,29 @@ class _RestaurantSearchScreenState
                   padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
                   child: ShadInput(
                     controller: _searchController,
-                    placeholder: const Text('식당이나 카페를 검색하세요'),
+                    placeholder: const Text('장소를 검색하세요'),
                     leading: const Icon(Icons.search_rounded, size: 18),
                     onChanged: _onSearchChanged,
                   ),
                 ),
 
-                // ── Category quick filters ──
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
-                  child: Row(
-                    children: [
-                      _CategoryChip(
-                        label: '음식점',
-                        icon: Icons.restaurant_rounded,
-                        isActive: _activeCategory == 'FD6',
-                        onTap: () => _searchCategory('FD6', '음식점'),
-                      ),
-                      const SizedBox(width: 8),
-                      _CategoryChip(
-                        label: '카페',
-                        icon: Icons.coffee_rounded,
-                        isActive: _activeCategory == 'CE7',
-                        onTap: () => _searchCategory('CE7', '카페'),
-                      ),
-                    ],
+                // ── Cuisine category filters ──
+                SizedBox(
+                  height: 52,
+                  child: ListView.separated(
+                    scrollDirection: Axis.horizontal,
+                    padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
+                    itemCount: _cuisineCategories.length,
+                    separatorBuilder: (_, __) => const SizedBox(width: 8),
+                    itemBuilder: (context, index) {
+                      final (label, icon) = _cuisineCategories[index];
+                      return _CategoryChip(
+                        label: label,
+                        icon: icon,
+                        isActive: _activeCategory == label,
+                        onTap: () => _searchCuisine(label),
+                      );
+                    },
                   ),
                 ),
 
@@ -189,7 +201,7 @@ class _RestaurantSearchScreenState
                       : _results.isEmpty
                           ? Center(
                               child: Text(
-                                '검색어를 입력하거나 카테고리를 선택하세요',
+                                '검색어를 입력하거나 음식 유형을 선택하세요',
                                 style: TextStyle(
                                   color: theme.colorScheme.mutedForeground,
                                 ),
@@ -242,7 +254,7 @@ class _RestaurantSearchScreenState
               top: 0,
               left: 0,
               right: 0,
-              child: GlassAppBar(title: '식당 검색', topPadding: topPadding),
+              child: GlassAppBar(title: '장소 검색', topPadding: topPadding),
             ),
           ],
         ),

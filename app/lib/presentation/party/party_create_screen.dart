@@ -173,24 +173,82 @@ class _PartyCreateScreenState extends ConsumerState<PartyCreateScreen> {
                       ),
                       const SizedBox(height: 16),
 
-                      ShadSelectFormField<String>(
-                        id: 'location_type',
-                        label: const Text('장소 유형'),
-                        placeholder: const Text('장소 유형을 선택하세요'),
-                        initialValue: 'company_nearby',
-                        options: const [
-                          ShadOption(value: 'company_nearby', child: Text('회사 근처')),
-                          ShadOption(value: 'midpoint', child: Text('중간 지점')),
-                          ShadOption(value: 'specific', child: Text('직접 입력')),
-                        ],
-                        selectedOptionBuilder: (context, value) {
-                          final labels = {
-                            'company_nearby': '회사 근처',
-                            'midpoint': '중간 지점',
-                            'specific': '직접 입력',
-                          };
-                          return Text(labels[value] ?? value);
+                      // 장소 검색 필드
+                      Text(
+                        '장소명',
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500,
+                          color: theme.colorScheme.foreground,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      GestureDetector(
+                        onTap: () async {
+                          final result = await context.push<KakaoPlace>(
+                            '/party/create/search-restaurant',
+                          );
+                          if (result != null) {
+                            setState(() {
+                              _selectedLat = result.lat;
+                              _selectedLon = result.lon;
+                              _selectedLocationName = result.placeName;
+                              _selectedCategoryName = result.categoryName;
+                              _mapCenterLat = result.lat;
+                              _mapCenterLon = result.lon;
+                              _nearbyRestaurants = [];
+                            });
+                          }
                         },
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 16,
+                            vertical: 14,
+                          ),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(8),
+                            border: Border.all(
+                              color: theme.colorScheme.border,
+                            ),
+                          ),
+                          child: Row(
+                            children: [
+                              Icon(
+                                Icons.search_rounded,
+                                size: 18,
+                                color: theme.colorScheme.mutedForeground,
+                              ),
+                              const SizedBox(width: 8),
+                              Expanded(
+                                child: Text(
+                                  _selectedLocationName ?? '장소를 검색하세요',
+                                  style: TextStyle(
+                                    color: _selectedLocationName != null
+                                        ? theme.colorScheme.foreground
+                                        : theme.colorScheme.mutedForeground,
+                                  ),
+                                ),
+                              ),
+                              if (_selectedLocationName != null)
+                                GestureDetector(
+                                  onTap: () {
+                                    setState(() {
+                                      _selectedLat = null;
+                                      _selectedLon = null;
+                                      _selectedLocationName = null;
+                                      _selectedCategoryName = null;
+                                      _nearbyRestaurants = [];
+                                    });
+                                  },
+                                  child: Icon(
+                                    Icons.close_rounded,
+                                    size: 18,
+                                    color: theme.colorScheme.mutedForeground,
+                                  ),
+                                ),
+                            ],
+                          ),
+                        ),
                       ),
                       const SizedBox(height: 16),
 
@@ -388,85 +446,6 @@ class _PartyCreateScreenState extends ConsumerState<PartyCreateScreen> {
                           ),
                         ),
                       ],
-                      const SizedBox(height: 16),
-
-                      // 장소 검색 필드
-                      Text(
-                        '장소명',
-                        style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w500,
-                          color: theme.colorScheme.foreground,
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      GestureDetector(
-                        onTap: () async {
-                          final result = await context.push<KakaoPlace>(
-                            '/party/create/search-restaurant',
-                          );
-                          if (result != null) {
-                            setState(() {
-                              _selectedLat = result.lat;
-                              _selectedLon = result.lon;
-                              _selectedLocationName = result.placeName;
-                              _selectedCategoryName = result.categoryName;
-                              _mapCenterLat = result.lat;
-                              _mapCenterLon = result.lon;
-                              _nearbyRestaurants = [];
-                            });
-                          }
-                        },
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 16,
-                            vertical: 14,
-                          ),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(8),
-                            border: Border.all(
-                              color: theme.colorScheme.border,
-                            ),
-                          ),
-                          child: Row(
-                            children: [
-                              Icon(
-                                Icons.search_rounded,
-                                size: 18,
-                                color: theme.colorScheme.mutedForeground,
-                              ),
-                              const SizedBox(width: 8),
-                              Expanded(
-                                child: Text(
-                                  _selectedLocationName ?? '장소를 검색하세요',
-                                  style: TextStyle(
-                                    color: _selectedLocationName != null
-                                        ? theme.colorScheme.foreground
-                                        : theme.colorScheme.mutedForeground,
-                                  ),
-                                ),
-                              ),
-                              if (_selectedLocationName != null)
-                                GestureDetector(
-                                  onTap: () {
-                                    setState(() {
-                                      _selectedLat = null;
-                                      _selectedLon = null;
-                                      _selectedLocationName = null;
-                                      _selectedCategoryName = null;
-                                      _nearbyRestaurants = [];
-                                    });
-                                  },
-                                  child: Icon(
-                                    Icons.close_rounded,
-                                    size: 18,
-                                    color: theme.colorScheme.mutedForeground,
-                                  ),
-                                ),
-                            ],
-                          ),
-                        ),
-                      ),
                       const SizedBox(height: 16),
 
                       // Max participants select

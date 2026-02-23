@@ -27,7 +27,9 @@
       "Bash(xcrun simctl spawn booted log stream:*)",
       "Bash(flutter pub add:*)",
       "Bash(chmod:*)",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "WebFetch(domain:developers.kakao.com)",
+      "Bash(dart run build_runner:*)"
     ]
   }
 }

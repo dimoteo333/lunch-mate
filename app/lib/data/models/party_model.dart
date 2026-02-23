@@ -1,5 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'user_model.dart';
+import 'user_brief_model.dart';
 
 part 'party_model.freezed.dart';
 part 'party_model.g.dart';
@@ -22,7 +22,7 @@ class PartyModel with _$PartyModel {
   const factory PartyModel({
     @JsonKey(name: 'party_id') required String partyId,
     @JsonKey(name: 'creator_id') required String creatorId,
-    required UserModel creator, // 간소화된 User 정보가 올 수 있음
+    required UserBriefModel creator, // 간소화된 User 정보가 올 수 있음
     required String title,
     String? description,
     
@@ -55,7 +55,7 @@ class PartyParticipantModel with _$PartyParticipantModel {
   const factory PartyParticipantModel({
     @JsonKey(name: 'participant_id') required String participantId,
     @JsonKey(name: 'user_id') required String userId,
-    required UserModel user,
+    required UserBriefModel user,
     required String status, // joined, left
     @JsonKey(name: 'joined_at') required DateTime joinedAt,
   }) = _PartyParticipantModel;

@@ -10,7 +10,7 @@ _$PartyModelImpl _$$PartyModelImplFromJson(Map<String, dynamic> json) =>
     _$PartyModelImpl(
       partyId: json['party_id'] as String,
       creatorId: json['creator_id'] as String,
-      creator: UserModel.fromJson(json['creator'] as Map<String, dynamic>),
+      creator: UserBriefModel.fromJson(json['creator'] as Map<String, dynamic>),
       title: json['title'] as String,
       description: json['description'] as String?,
       locationType: $enumDecode(_$LocationTypeEnumMap, json['location_type']),
@@ -75,7 +75,7 @@ _$PartyParticipantModelImpl _$$PartyParticipantModelImplFromJson(
 ) => _$PartyParticipantModelImpl(
   participantId: json['participant_id'] as String,
   userId: json['user_id'] as String,
-  user: UserModel.fromJson(json['user'] as Map<String, dynamic>),
+  user: UserBriefModel.fromJson(json['user'] as Map<String, dynamic>),
   status: json['status'] as String,
   joinedAt: DateTime.parse(json['joined_at'] as String),
 );

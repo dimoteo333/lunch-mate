@@ -169,7 +169,7 @@ class PartyDetailScreen extends ConsumerWidget {
                                     ),
                                   ),
                                   subtitle: Text(
-                                    p.user.companyName ?? '',
+                                    '⭐ ${p.user.ratingScore.toStringAsFixed(1)}',
                                     style: TextStyle(
                                       color: theme.colorScheme.mutedForeground,
                                     ),

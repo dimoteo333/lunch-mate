@@ -25,7 +25,7 @@ mixin _$PartyModel {
   String get partyId => throw _privateConstructorUsedError;
   @JsonKey(name: 'creator_id')
   String get creatorId => throw _privateConstructorUsedError;
-  UserModel get creator =>
+  UserBriefModel get creator =>
       throw _privateConstructorUsedError; // 간소화된 User 정보가 올 수 있음
   String get title => throw _privateConstructorUsedError;
   String? get description => throw _privateConstructorUsedError;
@@ -75,7 +75,7 @@ abstract class $PartyModelCopyWith<$Res> {
   $Res call({
     @JsonKey(name: 'party_id') String partyId,
     @JsonKey(name: 'creator_id') String creatorId,
-    UserModel creator,
+    UserBriefModel creator,
     String title,
     String? description,
     @JsonKey(name: 'location_type') LocationType locationType,
@@ -93,7 +93,7 @@ abstract class $PartyModelCopyWith<$Res> {
     @JsonKey(name: 'created_at') DateTime createdAt,
   });
 
-  $UserModelCopyWith<$Res> get creator;
+  $UserBriefModelCopyWith<$Res> get creator;
 }
 
 /// @nodoc
@@ -143,7 +143,7 @@ class _$PartyModelCopyWithImpl<$Res, $Val extends PartyModel>
             creator: null == creator
                 ? _value.creator
                 : creator // ignore: cast_nullable_to_non_nullable
-                      as UserModel,
+                      as UserBriefModel,
             title: null == title
                 ? _value.title
                 : title // ignore: cast_nullable_to_non_nullable
@@ -213,8 +213,8 @@ class _$PartyModelCopyWithImpl<$Res, $Val extends PartyModel>
   /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
-  $UserModelCopyWith<$Res> get creator {
-    return $UserModelCopyWith<$Res>(_value.creator, (value) {
+  $UserBriefModelCopyWith<$Res> get creator {
+    return $UserBriefModelCopyWith<$Res>(_value.creator, (value) {
       return _then(_value.copyWith(creator: value) as $Val);
     });
   }
@@ -232,7 +232,7 @@ abstract class _$$PartyModelImplCopyWith<$Res>
   $Res call({
     @JsonKey(name: 'party_id') String partyId,
     @JsonKey(name: 'creator_id') String creatorId,
-    UserModel creator,
+    UserBriefModel creator,
     String title,
     String? description,
     @JsonKey(name: 'location_type') LocationType locationType,
@@ -251,7 +251,7 @@ abstract class _$$PartyModelImplCopyWith<$Res>
   });
 
   @override
-  $UserModelCopyWith<$Res> get creator;
+  $UserBriefModelCopyWith<$Res> get creator;
 }
 
 /// @nodoc
@@ -300,7 +300,7 @@ class __$$PartyModelImplCopyWithImpl<$Res>
         creator: null == creator
             ? _value.creator
             : creator // ignore: cast_nullable_to_non_nullable
-                  as UserModel,
+                  as UserBriefModel,
         title: null == title
             ? _value.title
             : title // ignore: cast_nullable_to_non_nullable
@@ -400,7 +400,7 @@ class _$PartyModelImpl implements _PartyModel {
   @JsonKey(name: 'creator_id')
   final String creatorId;
   @override
-  final UserModel creator;
+  final UserBriefModel creator;
   // 간소화된 User 정보가 올 수 있음
   @override
   final String title;
@@ -541,7 +541,7 @@ abstract class _PartyModel implements PartyModel {
   const factory _PartyModel({
     @JsonKey(name: 'party_id') required final String partyId,
     @JsonKey(name: 'creator_id') required final String creatorId,
-    required final UserModel creator,
+    required final UserBriefModel creator,
     required final String title,
     final String? description,
     @JsonKey(name: 'location_type') required final LocationType locationType,
@@ -570,7 +570,7 @@ abstract class _PartyModel implements PartyModel {
   @JsonKey(name: 'creator_id')
   String get creatorId;
   @override
-  UserModel get creator; // 간소화된 User 정보가 올 수 있음
+  UserBriefModel get creator; // 간소화된 User 정보가 올 수 있음
   @override
   String get title;
   @override
@@ -633,7 +633,7 @@ mixin _$PartyParticipantModel {
   String get participantId => throw _privateConstructorUsedError;
   @JsonKey(name: 'user_id')
   String get userId => throw _privateConstructorUsedError;
-  UserModel get user => throw _privateConstructorUsedError;
+  UserBriefModel get user => throw _privateConstructorUsedError;
   String get status => throw _privateConstructorUsedError; // joined, left
   @JsonKey(name: 'joined_at')
   DateTime get joinedAt => throw _privateConstructorUsedError;
@@ -658,12 +658,12 @@ abstract class $PartyParticipantModelCopyWith<$Res> {
   $Res call({
     @JsonKey(name: 'participant_id') String participantId,
     @JsonKey(name: 'user_id') String userId,
-    UserModel user,
+    UserBriefModel user,
     String status,
     @JsonKey(name: 'joined_at') DateTime joinedAt,
   });
 
-  $UserModelCopyWith<$Res> get user;
+  $UserBriefModelCopyWith<$Res> get user;
 }
 
 /// @nodoc
@@ -703,7 +703,7 @@ class _$PartyParticipantModelCopyWithImpl<
             user: null == user
                 ? _value.user
                 : user // ignore: cast_nullable_to_non_nullable
-                      as UserModel,
+                      as UserBriefModel,
             status: null == status
                 ? _value.status
                 : status // ignore: cast_nullable_to_non_nullable
@@ -721,8 +721,8 @@ class _$PartyParticipantModelCopyWithImpl<
   /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
-  $UserModelCopyWith<$Res> get user {
-    return $UserModelCopyWith<$Res>(_value.user, (value) {
+  $UserBriefModelCopyWith<$Res> get user {
+    return $UserBriefModelCopyWith<$Res>(_value.user, (value) {
       return _then(_value.copyWith(user: value) as $Val);
     });
   }
@@ -740,13 +740,13 @@ abstract class _$$PartyParticipantModelImplCopyWith<$Res>
   $Res call({
     @JsonKey(name: 'participant_id') String participantId,
     @JsonKey(name: 'user_id') String userId,
-    UserModel user,
+    UserBriefModel user,
     String status,
     @JsonKey(name: 'joined_at') DateTime joinedAt,
   });
 
   @override
-  $UserModelCopyWith<$Res> get user;
+  $UserBriefModelCopyWith<$Res> get user;
 }
 
 /// @nodoc
@@ -783,7 +783,7 @@ class __$$PartyParticipantModelImplCopyWithImpl<$Res>
         user: null == user
             ? _value.user
             : user // ignore: cast_nullable_to_non_nullable
-                  as UserModel,
+                  as UserBriefModel,
         status: null == status
             ? _value.status
             : status // ignore: cast_nullable_to_non_nullable
@@ -818,7 +818,7 @@ class _$PartyParticipantModelImpl implements _PartyParticipantModel {
   @JsonKey(name: 'user_id')
   final String userId;
   @override
-  final UserModel user;
+  final UserBriefModel user;
   @override
   final String status;
   // joined, left
@@ -872,7 +872,7 @@ abstract class _PartyParticipantModel implements PartyParticipantModel {
   const factory _PartyParticipantModel({
     @JsonKey(name: 'participant_id') required final String participantId,
     @JsonKey(name: 'user_id') required final String userId,
-    required final UserModel user,
+    required final UserBriefModel user,
     required final String status,
     @JsonKey(name: 'joined_at') required final DateTime joinedAt,
   }) = _$PartyParticipantModelImpl;
@@ -887,7 +887,7 @@ abstract class _PartyParticipantModel implements PartyParticipantModel {
   @JsonKey(name: 'user_id')
   String get userId;
   @override
-  UserModel get user;
+  UserBriefModel get user;
   @override
   String get status; // joined, left
   @override
