@@ -10,8 +10,10 @@ from src.core.security import get_current_active_user, verify_token
 from src.models.user import User
 from src.models.party import Party, PartyParticipant
 from src.models.chat import ChatRoom, ChatMessage
+from src.models.notification import Notification
 from src.schemas.chat import ChatRoomResponse, ChatMessageResponse, ChatMessageListResponse
 from src.schemas.user import UserBriefResponse
+import re
 
 router = APIRouter(prefix="/chat", tags=["채팅"])
 
@@ -155,6 +157,32 @@ async def get_messages(
         has_more=has_more,
     )
 
+@router.get("/rooms/{room_id}/members", response_model=list[UserBriefResponse])
+async def get_room_members(
+    room_id: str,
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_active_user),
+):
+    """채팅방(파티) 멤버 목록 조회"""
+    result = await db.execute(
+        select(ChatRoom).where(ChatRoom.room_id == room_id)
+    )
+    room = result.scalar_one_or_none()
+    if not room:
+        raise HTTPException(status_code=404, detail="Room not found")
+        
+    # Get members
+    result = await db.execute(
+        select(User)
+        .join(PartyParticipant, User.user_id == PartyParticipant.user_id)
+        .where(
+            PartyParticipant.party_id == room.party_id,
+            PartyParticipant.status == "joined"
+        )
+    )
+    users = result.scalars().all()
+    return users
+
 
 @router.websocket("/ws/{room_id}")
 async def websocket_endpoint(websocket: WebSocket, room_id: str):
@@ -219,6 +247,35 @@ async def websocket_endpoint(websocket: WebSocket, room_id: str):
                         content=content,
                     )
                     db.add(message)
+                    
+                    # Parse mentions
+                    mentioned_nicknames = set(re.findall(r'@([a-zA-Z0-9_가-힣]+)', content))
+                    mentions = []
+                    if mentioned_nicknames:
+                        party_users = await db.execute(
+                            select(User)
+                            .join(PartyParticipant, User.user_id == PartyParticipant.user_id)
+                            .where(
+                                PartyParticipant.party_id == room.party_id,
+                                PartyParticipant.status == "joined",
+                                User.nickname.in_(mentioned_nicknames)
+                            )
+                        )
+                        for pu in party_users.scalars().all():
+                            mentions.append({
+                                "user_id": pu.user_id,
+                                "nickname": pu.nickname
+                            })
+                            # Create Notification
+                            notif = Notification(
+                                user_id=pu.user_id,
+                                sender_id=user_id,
+                                type="mention",
+                                content=f"{user.nickname}님이 회원님을 언급했습니다.",
+                                reference_id=room_id
+                            )
+                            db.add(notif)
+                            
                     await db.commit()
                     await db.refresh(message)
 
@@ -232,6 +289,7 @@ async def websocket_endpoint(websocket: WebSocket, room_id: str):
                             "sender_nickname": user.nickname,
                             "content": content,
                             "created_at": message.created_at.isoformat(),
+                            "mentions": mentions,
                         },
                     )
 

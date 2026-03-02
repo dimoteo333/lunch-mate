@@ -29,6 +29,7 @@ from src.schemas.auth import (
     OnboardingStep3,
     OnboardingStep4,
 )
+from src.schemas.notification import NotificationResponse
 
 __all__ = [
     "UserCreate",
@@ -52,4 +53,5 @@ __all__ = [
     "OnboardingStep2",
     "OnboardingStep3",
     "OnboardingStep4",
+    "NotificationResponse",
 ]

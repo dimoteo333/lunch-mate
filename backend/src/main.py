@@ -9,7 +9,7 @@ from src.users.router import router as users_router
 from src.parties.router import router as parties_router
 from src.chat.router import router as chat_router
 from src.reviews.router import router as reviews_router
-
+from src.notifications.router import router as notifications_router
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -41,6 +41,7 @@ app.include_router(users_router, prefix=settings.API_V1_PREFIX)
 app.include_router(parties_router, prefix=settings.API_V1_PREFIX)
 app.include_router(chat_router, prefix=settings.API_V1_PREFIX)
 app.include_router(reviews_router, prefix=settings.API_V1_PREFIX)
+app.include_router(notifications_router, prefix=settings.API_V1_PREFIX)
 
 
 @app.get("/")

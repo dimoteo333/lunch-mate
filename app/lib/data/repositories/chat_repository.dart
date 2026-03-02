@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/constants/api_constants.dart';
 import '../providers/api_provider.dart';
 import '../models/chat_model.dart';
+import '../models/user_brief_model.dart';
 
 final chatRepositoryProvider = Provider<ChatRepository>((ref) {
   return ChatRepository(ref.read(dioProvider));
@@ -14,8 +15,20 @@ class ChatRepository {
   ChatRepository(this._dio);
 
   Future<List<ChatMessageModel>> getMessages(String roomId) async {
-    final response = await _dio.get('${ApiConstants.chat}/rooms/$roomId/messages');
-    final List items = response.data;
+    final response = await _dio.get(
+      '${ApiConstants.chat}/rooms/$roomId/messages',
+    );
+    final List items =
+        response.data['items'] ??
+        response.data; // backend returns items and has_more
     return items.map((json) => ChatMessageModel.fromJson(json)).toList();
+  }
+
+  Future<List<UserBriefModel>> getRoomMembers(String roomId) async {
+    final response = await _dio.get(
+      '${ApiConstants.chat}/rooms/$roomId/members',
+    );
+    final List items = response.data;
+    return items.map((json) => UserBriefModel.fromJson(json)).toList();
   }
 }
