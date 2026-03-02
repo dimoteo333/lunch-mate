@@ -248,8 +248,9 @@ async def websocket_endpoint(websocket: WebSocket, room_id: str):
                     )
                     db.add(message)
                     
-                    # Parse mentions
+                    # Parse mentions - track by user_id to prevent duplicate notifications
                     mentioned_nicknames = set(re.findall(r'@([a-zA-Z0-9_가-힣]+)', content))
+                    mentioned_user_ids = set()  # Track mentioned users by ID
                     mentions = []
                     if mentioned_nicknames:
                         party_users = await db.execute(
@@ -262,6 +263,11 @@ async def websocket_endpoint(websocket: WebSocket, room_id: str):
                             )
                         )
                         for pu in party_users.scalars().all():
+                            # Skip if we already mentioned this user (by user_id)
+                            if pu.user_id in mentioned_user_ids:
+                                continue
+                            mentioned_user_ids.add(pu.user_id)
+
                             mentions.append({
                                 "user_id": pu.user_id,
                                 "nickname": pu.nickname

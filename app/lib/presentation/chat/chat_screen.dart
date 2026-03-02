@@ -9,6 +9,7 @@ import '../../../providers/chat_provider.dart';
 import '../../../providers/auth_provider.dart';
 import '../widgets/liquid_glass.dart';
 import '../../core/theme/app_theme.dart';
+import '../../core/utils/debouncer.dart';
 
 class ChatScreen extends ConsumerStatefulWidget {
   final String roomId;
@@ -21,6 +22,7 @@ class ChatScreen extends ConsumerStatefulWidget {
 class _ChatScreenState extends ConsumerState<ChatScreen> {
   final _textController = TextEditingController();
   final _focusNode = FocusNode();
+  final _debouncer = Debouncer(delay: const Duration(milliseconds: 75));
 
   bool _showAutocomplete = false;
   String _mentionQuery = '';
@@ -48,12 +50,14 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
         final query = textBeforeCursor.substring(lastAtPos + 1);
         if (!query.contains(' ') && !query.contains('\n')) {
           _mentionQuery = query;
-          _filterMembers();
+          // Debounce the filtering to reduce rebuilds during rapid typing
+          _debouncer.run(_filterMembers);
           return;
         }
       }
     }
 
+    // Hide autocomplete immediately (no debounce needed for hiding)
     if (_showAutocomplete) {
       setState(() => _showAutocomplete = false);
     }
@@ -99,6 +103,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
 
   @override
   void dispose() {
+    _debouncer.dispose();
     _textController.removeListener(_onTextChanged);
     _textController.dispose();
     _focusNode.dispose();
