@@ -8,7 +8,7 @@ void main() {
     final mentionRegex = RegExp(r'@([a-zA-Z0-9_가-힣]+)');
 
     test('extracts single mention correctly', () {
-      final input = "Hello @JohnDoe";
+      const input = "Hello @JohnDoe";
       final matches = mentionRegex.allMatches(input).toList();
 
       expect(matches.length, 1);
@@ -17,7 +17,7 @@ void main() {
     });
 
     test('extracts multiple mentions correctly', () {
-      final input = "Hi @alice and @bob";
+      const input = "Hi @alice and @bob";
       final matches = mentionRegex.allMatches(input).toList();
 
       expect(matches.length, 2);
@@ -26,7 +26,7 @@ void main() {
     });
 
     test('supports Korean characters in mentions', () {
-      final input = "Hello @철수 and @영희";
+      const input = "Hello @철수 and @영희";
       final matches = mentionRegex.allMatches(input).toList();
 
       expect(matches.length, 2);
@@ -35,7 +35,7 @@ void main() {
     });
 
     test('does not match special characters after mention', () {
-      final input = "Hello @JohnDoe!";
+      const input = "Hello @JohnDoe!";
       final matches = mentionRegex.allMatches(input).toList();
 
       expect(matches.length, 1);
@@ -43,21 +43,21 @@ void main() {
     });
 
     test('does not match @ symbol alone', () {
-      final input = "Hello @";
+      const input = "Hello @";
       final matches = mentionRegex.allMatches(input).toList();
 
       expect(matches.isEmpty, true);
     });
 
     test('does not match mentions without @', () {
-      final input = "Hello alice";
+      const input = "Hello alice";
       final matches = mentionRegex.allMatches(input).toList();
 
       expect(matches.isEmpty, true);
     });
 
     test('supports underscores in mentions', () {
-      final input = "Hello @user_name";
+      const input = "Hello @user_name";
       final matches = mentionRegex.allMatches(input).toList();
 
       expect(matches.length, 1);
@@ -65,7 +65,7 @@ void main() {
     });
 
     test('supports numbers in mentions', () {
-      final input = "Hello @user123";
+      const input = "Hello @user123";
       final matches = mentionRegex.allMatches(input).toList();
 
       expect(matches.length, 1);
@@ -73,7 +73,7 @@ void main() {
     });
 
     test('handles mixed alphanumeric and Korean', () {
-      final input = "Hello @User123김";
+      const input = "Hello @User123김";
       final matches = mentionRegex.allMatches(input).toList();
 
       expect(matches.length, 1);
@@ -81,14 +81,14 @@ void main() {
     });
 
     test('no mentions return empty list', () {
-      final input = "Just a regular test message without tags.";
+      const input = "Just a regular test message without tags.";
       final matches = mentionRegex.allMatches(input).toList();
 
       expect(matches.isEmpty, true);
     });
 
     test('handles mention at start of message', () {
-      final input = "@alice hello there";
+      const input = "@alice hello there";
       final matches = mentionRegex.allMatches(input).toList();
 
       expect(matches.length, 1);
@@ -96,7 +96,7 @@ void main() {
     });
 
     test('handles mention after newline', () {
-      final input = "Hello\n@alice there";
+      const input = "Hello\n@alice there";
       final matches = mentionRegex.allMatches(input).toList();
 
       expect(matches.length, 1);
@@ -104,7 +104,7 @@ void main() {
     });
 
     test('handles mention after space', () {
-      final input = "Hello @alice there";
+      const input = "Hello @alice there";
       final matches = mentionRegex.allMatches(input).toList();
 
       expect(matches.length, 1);
@@ -112,7 +112,7 @@ void main() {
     });
 
     test('does not trigger in middle of word', () {
-      final input = "email@address.com";
+      const input = "email@address.com";
       final matches = mentionRegex.allMatches(input).toList();
 
       // Should not match because @ is not after space/newline/start
@@ -123,14 +123,14 @@ void main() {
     });
 
     test('handles empty nickname scenario', () {
-      final nickname = '';
+      const nickname = '';
       final displayChar = nickname.isNotEmpty ? nickname[0] : '?';
 
       expect(displayChar, '?');
     });
 
     test('handles single character nickname', () {
-      final nickname = 'A';
+      const nickname = 'A';
       final displayChar = nickname.isNotEmpty ? nickname[0] : '?';
 
       expect(displayChar, 'A');
@@ -235,14 +235,14 @@ void main() {
   group('Empty Member List Handling', () {
     test('handles empty member list gracefully', () {
       final members = <String>[];
-      final query = 'test';
+      const query = 'test';
       final filtered = members.where((m) => m.toLowerCase().contains(query.toLowerCase())).toList();
 
       expect(filtered, isEmpty);
     });
 
     test('handles null member list gracefully', () {
-      final List<String>? members = null;
+      const List<String>? members = null;
       final safeMembers = members ?? [];
 
       expect(safeMembers, isEmpty);
@@ -252,8 +252,8 @@ void main() {
 
   group('Cursor Position Edge Cases', () {
     test('handles negative cursor position', () {
-      final text = "Hello world";
-      final cursorPosition = -1;
+      const text = "Hello world";
+      const cursorPosition = -1;
 
       final shouldProcess = cursorPosition >= 0 && cursorPosition <= text.length;
 
@@ -261,8 +261,8 @@ void main() {
     });
 
     test('handles cursor position beyond text length', () {
-      final text = "Hello";
-      final cursorPosition = 100;
+      const text = "Hello";
+      const cursorPosition = 100;
 
       final shouldProcess = cursorPosition >= 0 && cursorPosition <= text.length;
 
@@ -270,8 +270,8 @@ void main() {
     });
 
     test('handles valid cursor position', () {
-      final text = "Hello";
-      final cursorPosition = 3;
+      const text = "Hello";
+      const cursorPosition = 3;
 
       final shouldProcess = cursorPosition >= 0 && cursorPosition <= text.length;
 
@@ -281,14 +281,14 @@ void main() {
 
   group('Mention Trigger Position Tests', () {
     test('triggers at start of text', () {
-      final text = "@alice";
+      const text = "@alice";
       final lastAtPos = text.lastIndexOf('@');
 
       expect(lastAtPos, 0);
     });
 
     test('triggers after space', () {
-      final text = "Hello @alice";
+      const text = "Hello @alice";
       final lastAtPos = text.lastIndexOf('@');
 
       expect(lastAtPos, 6);
@@ -296,7 +296,7 @@ void main() {
     });
 
     test('triggers after newline', () {
-      final text = "Hello\n@alice";
+      const text = "Hello\n@alice";
       final lastAtPos = text.lastIndexOf('@');
 
       expect(lastAtPos, 6);
@@ -304,7 +304,7 @@ void main() {
     });
 
     test('does not trigger in middle of word', () {
-      final text = "email@address";
+      const text = "email@address";
       final lastAtPos = text.lastIndexOf('@');
 
       expect(lastAtPos, 5);

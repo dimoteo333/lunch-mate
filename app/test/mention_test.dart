@@ -6,7 +6,7 @@ void main() {
     final RegExp mentionRegex = RegExp(r'@([a-zA-Z0-9_가-힣]+)');
 
     test('extracts single mention', () {
-      final input = "Hello @JohnDoe";
+      const input = "Hello @JohnDoe";
       final matches = mentionRegex.allMatches(input).toList();
 
       expect(matches.length, 1);
@@ -14,7 +14,7 @@ void main() {
     });
 
     test('extracts multiple mentions', () {
-      final input = "Hi @alice and @bob";
+      const input = "Hi @alice and @bob";
       final matches = mentionRegex.allMatches(input).toList();
 
       expect(matches.length, 2);
@@ -23,7 +23,7 @@ void main() {
     });
 
     test('supports Korean characters in mentions', () {
-      final input = "Hello @철수 and @영희";
+      const input = "Hello @철수 and @영희";
       final matches = mentionRegex.allMatches(input).toList();
 
       expect(matches.length, 2);
@@ -32,7 +32,7 @@ void main() {
     });
 
     test('does not match special characters after mention', () {
-      final input = "Hello @JohnDoe!";
+      const input = "Hello @JohnDoe!";
       final matches = mentionRegex.allMatches(input).toList();
 
       expect(matches.length, 1);
@@ -40,7 +40,7 @@ void main() {
     });
 
     test('no mentions return empty list', () {
-      final input = "Just a regular test message without tags.";
+      const input = "Just a regular test message without tags.";
       final matches = mentionRegex.allMatches(input).toList();
 
       expect(matches.isEmpty, true);

@@ -40,7 +40,7 @@ void main() {
     });
 
     test('copyWith preserves values when not provided', () {
-      final members = [UserBriefModel(userId: 'user1', nickname: 'Alice', ratingScore: 4.0)];
+      final members = [const UserBriefModel(userId: 'user1', nickname: 'Alice', ratingScore: 4.0)];
 
       final state1 = ChatState(
         messages: [],
@@ -66,7 +66,7 @@ void main() {
           createdAt: DateTime(2026, 1, 1),
           type: 'message',
         )],
-        members: [UserBriefModel(userId: 'user1', nickname: 'Alice', ratingScore: 4.0)],
+        members: [const UserBriefModel(userId: 'user1', nickname: 'Alice', ratingScore: 4.0)],
         isLoading: true,
         error: 'error',
       );
@@ -124,7 +124,7 @@ void main() {
     });
 
     test('parses timestamp correctly', () {
-      final timestamp = '2026-01-15T12:30:45Z';
+      const timestamp = '2026-01-15T12:30:45Z';
       final json = {
         'message_id': 'msg1',
         'room_id': 'room1',
@@ -184,7 +184,7 @@ void main() {
     });
 
     test('toJson creates correct JSON', () {
-      final model = UserBriefModel(
+      const model = UserBriefModel(
         userId: 'user1',
         nickname: 'Alice',
         ratingScore: 4.5,
@@ -198,7 +198,7 @@ void main() {
     });
 
     test('copyWith creates new instance with updated values', () {
-      final model1 = UserBriefModel(
+      const model1 = UserBriefModel(
         userId: 'user1',
         nickname: 'Alice',
         ratingScore: 4.5,
@@ -222,8 +222,8 @@ void main() {
       final mentions = <Map<String, dynamic>>[];
 
       // Same user mentioned multiple times
-      final nickname = 'Alice';
-      final userId = 'user1';
+      const nickname = 'Alice';
+      const userId = 'user1';
 
       // First mention
       if (!mentionedUserIds.contains(userId)) {
